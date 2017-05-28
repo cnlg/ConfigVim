@@ -120,7 +120,7 @@ imap <silent> <F11> :if &guioptions =~# 'T' <Bar>
         \set guioptions+=m <Bar>
     \endif<CR>
 
-" 可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
+"可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
 set mouse=a
 set selection=exclusive
 set selectmode=mouse,key
@@ -187,11 +187,56 @@ filetype plugin indent on
 set completeopt=longest,menu
 
 " 括号自动补全
-inoremap ( ()<ESC>i
+"inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap { {<CR>}<ESC>kA<CR>
 " inoremap < <><ESC>i
 "
+"定义CompileRun函数，用来调用编译和运行  
+func CompileRun()  
+exec "w"  
+  
+if &filetype == 'c'  
+exec "!gcc -Wall -enable-auto-import % -g -o %<.exe"  
+  
+elseif &filetype == 'cpp'  
+exec "!g++ -Wall -enable-auto-import % -g -o %<.exe"  
+  
+elseif &filetype == 'java'  
+exec "!javac %"  
+endif  
+endfunc  
+"结束定义ComplieRun  
+  
+"定义Run函数  
+func Run()  
+if &filetype == 'c' || &filetype == 'cpp'  
+exec "!%<.exe"  
+elseif &filetype == 'java'  
+exec "!java %<"  
+endif  
+endfunc  
+  
+"定义Debug函数，用来调试程序  
+func Debug()  
+exec "w"  
+  
+if &filetype == 'c'  
+exec "!gcc % -g -o %<.exe"  
+exec "!gdb %<.exe"  
+elseif &filetype == 'cpp'  
+exec "!g++ % -g -o %<.exe"  
+exec "!gdb %<.exe"  
+elseif &filetype == 'java'  
+exec "!javac %"  
+exec "!jdb %<"  
+endif  
+endfunc  
+  
+"设置程序的运行和调试的快捷键F5和Ctrl-F5  
+map <F5> :call CompileRun()<CR>  
+map <F6> :call Run()<CR>  
+map <C-F5> :call Debug()<CR>
 
 
 "插件管理
@@ -226,21 +271,45 @@ filetype plugin indent on
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "插件快捷键设置
 "autocmd vimenter * NERDTree
+"快捷键
 map <F2> :NERDTreeToggle<CR>
 imap <F2> :NERDTreeToggle<CR>
-let g:NERDTreeWinPos="left"
-let g:NERDTreeWinSize=25
-let g:NERDTreeShowLineNumbers=1
-let g:neocomplcache_enable_at_startup = 1
-"nerdtree end
+"显示增强
+let NERDChristmasTree=1
+"自动调整焦点
+let NERDTreeAutoCenter=1
+"鼠标模式:目录单击,文件双击
+let NERDTreeMouseMode=2
+"打开文件后自动关闭
+let NERDTreeQuitOnOpen=0
+"显示文件
+let NERDTreeShowFiles=1
+"显示隐藏文件
+let NERDTreeShowHidden=0
+"高亮显示当前文件或目录
+let NERDTreeHightCursorline=1
+"显示行号
+let NERDTreeShowLineNumbers=1
+"窗口位置
+let NERDTreeWinPos='left'
+"窗口宽度
+let NERDTreeWinSize=31
+"不显示'Bookmarks' label 'Press ? for help'
+let NERDTreeMinimalUI=1
+"当打开vim且没有文件时自动打开NERDTree
+autocmd vimenter * if !argc() | NERDTree | endif
+"只剩 NERDTree时自动关闭
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
 
+" 设置当文件被改动时自动载入
+" set autoread
 
 "NERD_commenter设定注释
 map <F9> <leader>cc
 map <F10> <leader>cu
 
-nnoremap <silent> <F3> :Grep<CR>
-imap <silent> <F3> :Grep<CR>
+nnoremap <silent> <F4> :Grep<CR>
+imap <silent> <F4> :Grep<CR>
 set laststatus=2  "状态栏设置
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -254,6 +323,16 @@ nmap    w=  :resize +3<CR>
 nmap    w-  :resize -3<CR>
 nmap    w,  :vertical resize -3<CR>
 nmap    w.  :vertical resize +3<CR>
+
+"新建标签
+:map <F8> <Esc>:tabnew<CR>
+
+"映射Alt-0_9快捷键快速选择标签
+for temp in [0,1,2,3,4,5,6,7,8,9]
+	exe 'map <A-' . temp . '> ' . temp . 'gt'
+endfor
+
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CTags的设定  
@@ -305,8 +384,8 @@ let g:miniBufExplModSelTarget = 1  "不要在不可编辑内容的窗口（如Ta
 "nmap <Leader>tb :TagbarToggle<CR>        "快捷键设置
 let g:tagbar_ctags_bin='ctags'            "ctags程序的路径
 let g:tagbar_width=30                   "窗口宽度的设置
-map <F4> :Tagbar<CR>
-imap <F4> :Tagbar<CR>
+map <F3> :Tagbar<CR>
+imap <F3> :Tagbar<CR>
 "autocmd BufReadPost *.cpp,*.c,*.h,*.hpp,*.cc,*.cxx call tagbar#autoopen()     "如果是c语言的程序的话，tagbar自动开启
 
 "if has(‘gui_running’) && has(“win32″)
@@ -327,19 +406,22 @@ imap <F4> :Tagbar<CR>
 "let OmniCpp_SelectFirstItem = 2 "自动弹出时自动跳至第一个
 "set tags=tags;
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " YouCompleteMe 功能  
-let g:ycm_complete_in_comments=1    " 补全功能在注释中同样有效 
-let g:ycm_confirm_extra_conf=0   " 允许 vim 加载 .ycm_extra_conf.py 文件，不再提示   
-let g:ycm_collect_identifiers_from_tags_files=1  " 开启 YCM 基于标签引擎  
-" 引入 C++ 标准库tags，这个没有也没关系，只要.ycm_extra_conf.py文件中指定了正确的标准库路径  
-"set tags+=/data/misc/software/misc./vim/stdcpp.tags  
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-
-inoremap <leader>; <C-x><C-o>  " YCM 集成 OmniCppComplete 补全引擎，设置其快捷键  
-set completeopt-=preview   " 补全内容不以分割子窗口形式出现，只显示补全列表  
-let g:ycm_min_num_of_chars_for_completion=1   " 从第一个键入字符就开始罗列匹配项  
-let g:ycm_cache_omnifunc=0   " 禁止缓存匹配项，每次都重新生成匹配项             
-let g:ycm_seed_identifiers_with_syntax=1   " 语法关键字补全   
-let g:ycm_key_invoke_completion = '<M-;>'   " 修改对C函数的补全快捷键，默认是CTRL + space，修改为ALT + ;  
-
-nnoremap <leader>jd :YcmCompleter GoToDefinitionElseDeclaration<CR> " 跳转到定义处
+"leader映射为逗号“，”
+let mapleader = "," 
+"配置默认的ycm_extra_conf.py
+let g:ycm_global_ycm_extra_conf = 'C:\Program Files (x86)\Vim\.ycm_extra_conf.py'
+"按gb 会跳转到定义
+"nnoremap <silent> gb :YcmCompleter GoToDefinitionElseDeclaration<CR>  
+nnoremap <silent> gl :YcmCompleter GoglToDeclaration<CR>
+nnoremap <silent> gf :YcmCompleter GoToDefinition<CR>
+nnoremap <silent> gb :YcmCompleter GoToDefinitionElseDeclaration<CR>
+ 
+"打开vim时不再询问是否加载ycm_extra_conf.py配置
+let g:ycm_confirm_extra_conf=0   
+"使用ctags生成的tags文件
+let g:ycm_collect_identifiers_from_tag_files = 1 
+"map <F4> : YcmDiags<CR>
