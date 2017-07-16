@@ -177,13 +177,6 @@ set winaltkeys=no
 "leader映射为逗号“，”
 "let mapleader = "," 
 
-" 打开当前目录 windows
-map <leader>ex :!start explorer %:p:h<CR>
-
-" 打开当前目录CMD
-map <leader>cmd :!start<cr>
-" 打印当前时间
-"map <F3> a<C-R>=strftime("%Y-%m-%d %a %I:%M %p")<CR><Esc>
 
 " 复制当前文件/路径到剪贴板
 nmap ,fn :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
@@ -329,7 +322,7 @@ let NERDTreeWinPos='left'
 "窗口宽度
 let NERDTreeWinSize=31
 "不显示'Bookmarks' label 'Press ? for help'
-let NERDTreeMinimalUI=1
+let NERDTreeMinimalUI=0
 "当打开vim且没有文件时自动打开NERDTree
 autocmd vimenter * if !argc() | NERDTree | endif
 "只剩 NERDTree时自动关闭
@@ -575,5 +568,16 @@ inoremap <A-j> <Esc>:m .+1<CR>==gi
 inoremap <A-k> <Esc>:m .-2<CR>==gi
 vnoremap <A-j> :m '>+1<CR>gv=gv
 vnoremap <A-k> :m '<-2<CR>gv=gv
+
+"打开当前文件所在目录
+function OpenFileLocation()  
+    if ( expand("%") != "" )  
+        execute "!start explorer /select, %"   
+    else  
+        execute "!start explorer /select, %:p:h"  
+    endif  
+endfunction  
+  
+map gb <ESC>:call OpenFileLocation()<CR>  
 
 
