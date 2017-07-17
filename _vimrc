@@ -58,7 +58,7 @@ filetype on
 filetype plugin indent on
 "colorscheme evening	"配色方案
 colorscheme desert
-set helplang=cn		"设置中文帮助
+"set helplang=cn		"设置中文帮助
 set history=500		"保留历史记录
 "set guifont=Monaco:h10	"设置字体为Monaco，大小10
 "set guifont=Courier_New:h12 ":cANSI   " 设置字体 
@@ -174,23 +174,12 @@ set clipboard+=unnamed
 " 设置 alt 键不映射到菜单栏
 set winaltkeys=no
 
-"leader映射为逗号“，”
+"leader映射为逗号“，
 let mapleader = "," 
-
-" 打开当前目录 windows
-map <leader>ex :!start explorer %:p:h<CR>
-
-" 打开当前目录CMD
-map <leader>cmd :!start<cr>
-" 打印当前时间
-"map <F3> a<C-R>=strftime("%Y-%m-%d %a %I:%M %p")<CR><Esc>
 
 " 复制当前文件/路径到剪贴板
 nmap ,fn :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
 nmap ,fp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
-
-"切换到当前目录
-nnoremap <silent> <leader>. :cd %:p:h<CR>
 
 
 " 为C程序提供自动缩进
@@ -346,7 +335,7 @@ let NERDTreeWinPos='left'
 "窗口宽度
 let NERDTreeWinSize=31
 "不显示'Bookmarks' label 'Press ? for help'
-let NERDTreeMinimalUI=1
+let NERDTreeMinimalUI=0
 "当打开vim且没有文件时自动打开NERDTree
 autocmd vimenter * if !argc() | NERDTree | endif
 "只剩 NERDTree时自动关闭
@@ -506,10 +495,10 @@ inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
 " 用于显示对齐线，与 indent_guides 在显示方式上不同，根据自己喜好选择了  
 " 在终端上会有屏幕刷新的问题，这个问题能解决有更好了  
 " 开启/关闭对齐线  
-nmap <leader>il :IndentLinesToggle<CR>
+"nmap <leader>il :IndentLinesToggle<CR>
 "let g:indentLine_char = "┊"
-let g:indentLine_first_char = "┊"
-let g:indentLine_color_gui = '#A4E57E'
+"let g:indentLine_first_char = "┊"
+"let g:indentLine_color_gui = '#A4E57E
 
 " -----------------------------------------------------------------------------  
 "  < SrcExpl 插件配置 >  
@@ -579,7 +568,6 @@ let g:airline_symbols.linenr = '|'
 nnoremap <C-N> :bn<CR>
 nnoremap <C-P> :bp<CR>
 
-
 " 映射<leader>num到num buffer
 map <leader>1 :b 1<CR>
 map <leader>2 :b 2<CR>
@@ -635,3 +623,30 @@ let g:rainbow_conf = {
 "取消高亮显示
 map <C-k> :noh<CR>
 imap <C-k> :noh<CR>
+
+"normal & insert mode
+"Alt + k ： 上移当前行
+"Alt + j ： 下移当前行
+"visual mode
+"Alt + k ：上移当前行或者选中行
+"Alt + j ： 下移当前行或者选中行
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
+"打开当前文件所在目录
+function OpenFileLocation()  
+    if ( expand("%") != "" )  
+        execute "!start explorer /select, %"   
+    else  
+        execute "!start explorer /select, %:p:h"  
+    endif  
+endfunction  
+  
+map gb <ESC>:call OpenFileLocation()<CR>  
+
+
