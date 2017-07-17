@@ -61,7 +61,8 @@ colorscheme desert
 set helplang=cn		"设置中文帮助
 set history=500		"保留历史记录
 "set guifont=Monaco:h10	"设置字体为Monaco，大小10
-set guifont=Courier_New:h10 ":cANSI   " 设置字体  
+"set guifont=Courier_New:h12 ":cANSI   " 设置字体 
+set guifont=Courier_New:h12 ":cANSI   " 设置字体  
 set tabstop=4		"设置tab的跳数
 
 " 统一缩进为4
@@ -97,6 +98,11 @@ set noundofile
 set nobackup
 set noswapfile
 
+"去除声音
+set noeb
+set vb t_vb= "关闭声音
+au GuiEnter * set t_vb= "关闭闪屏
+
 "Toggle Menu and Toolbar 	"隐藏菜单栏和工具栏
 "set go=				"不要图形按钮
 "set guioptions-=T           " 隐藏工具栏
@@ -122,8 +128,8 @@ imap <silent> <F11> :if &guioptions =~# 'T' <Bar>
 
 "可以在buffer的任何地方使用鼠标（类似office中在工作区双击鼠标定位）
 set mouse=a
-set selection=exclusive
-set selectmode=mouse,key
+"set selection=exclusive
+"set selectmode=mouse,key
 
  
 "===========================
@@ -143,11 +149,11 @@ set nocompatible  "去掉讨厌的有关vi一致性模式，避免以前版本�
 "代码设置
 "===========================
 set nu        "显示行号
-syntax enable "打开语法高亮
-syntax on "打开语法高亮
+"syntax enable "打开语法高亮
+syntax on     "打开语法高亮
 set showmatch "设置匹配模式，相当于括号匹配
 set smartindent "智能对齐
-set shiftwidth=4 "换行时，交错使用4个空格
+"set shiftwidth=4 "换行时，交错使用4个空格
 set autoindent "设置自动对齐
 set ai! "设置自动缩进
 "set cursorcolumn "启用光标列
@@ -163,33 +169,58 @@ set noswapfile "不生成.swp文件
 " 通过使用: commands命令，告诉我们文件的哪一行被改变过
 set report=0
 
+" Vim 的默认寄存器和系统剪贴板共享
+set clipboard+=unnamed
+" 设置 alt 键不映射到菜单栏
+set winaltkeys=no
+
+"leader映射为逗号“，”
+let mapleader = "," 
+
+" 打开当前目录 windows
+map <leader>ex :!start explorer %:p:h<CR>
+
+" 打开当前目录CMD
+map <leader>cmd :!start<cr>
+" 打印当前时间
+"map <F3> a<C-R>=strftime("%Y-%m-%d %a %I:%M %p")<CR><Esc>
+
+" 复制当前文件/路径到剪贴板
+nmap ,fn :let @*=substitute(expand("%"), "/", "\\", "g")<CR>
+nmap ,fp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
+
+"切换到当前目录
+nnoremap <silent> <leader>. :cd %:p:h<CR>
+
 
 " 为C程序提供自动缩进
 "自动补全
-"":inoremap ( ()<ESC>i
-"":inoremap ) <c-r>=ClosePair(')')<CR>
-":inoremap { {<CR>}<ESC>O
-":inoremap } <c-r>=ClosePair('}')<CR>
-"":inoremap [ []<ESC>i
-"":inoremap ] <c-r>=ClosePair(']')<CR>
-"":inoremap " ""<ESC>i
-"":inoremap ' ''<ESC>i
-""function! ClosePair(char)
-""	if getline('.')[col('.') - 1] == a:char
-""		return "\<Right>"
-""	else
-""		return a:char
-""	endif
-""endfunction
+:inoremap ( ()<ESC>i
+:inoremap ) <c-r>=ClosePair(')')<CR>
+:inoremap { {<CR>}<ESC>O
+:inoremap } <c-r>=ClosePair('}')<CR>
+:inoremap [ []<ESC>i
+:inoremap ] <c-r>=ClosePair(']')<CR>
+:inoremap " ""<ESC>i
+:inoremap ' ''<ESC>i
+function! ClosePair(char)
+    if getline('.')[col('.') - 1] == a:char
+        return "\<Right>"
+    else
+        return a:char
+    endif
+endfunction
 filetype plugin indent on 
+"打开文件类型检测, 加了这句才可以用智能补全
+set completeopt=longest,menu
 
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
 
 " 括号自动补全
 "inoremap ( ()<ESC>i
-inoremap [ []<ESC>i
-inoremap { {<CR>}<ESC>kA<CR>
+"inoremap [ []<ESC>i
+"inoremap { {<CR>}<ESC>kA<CR>
 " inoremap < <><ESC>i
 "
 "定义CompileRun函数，用来调用编译和运行  
@@ -252,19 +283,39 @@ Plugin 'scrooloose/nerdtree'
 Plugin 'scrooloose/nerdcommenter'
 Plugin 'jistr/vim-nerdtree-tabs'
 Plugin 'kien/ctrlp.vim'
-Plugin 'minibufexplorerpp'
+"Plugin 'minibufexplorerpp'
 "Plugin 'taglist.vim'          "使用插件Tagbar代替
 Plugin 'quickfixstatus.vim'   
 Plugin 'grep.vim'             "搜索字符串
 Plugin 'a.vim'                ".c,.h文件切换
-Plugin 'bling/vim-airline'    "美化状态栏
+"Plugin 'bling/vim-airline'    "美化状态栏
+Plugin 'vim-airline/vim-airline'
+Plugin 'vim-airline/vim-airline-themes'
 Plugin 'majutsushi/tagbar'
-Plugin 'Valloric/YouCompleteMe'
+"Plugin 'Valloric/YouCompleteMe'
 Plugin 'txt.vim'
+Plugin 'Shougo/neocomplete.vim'
+"Plugin 'Yggdroot/indentLine'
+Plugin 'wesleyche/SrcExpl'  "增强源码显示功能
+Plugin 'terryma/vim-multiple-cursors'
+Plugin 'cpp.vim'
+Plugin 'luochen1990/rainbow'
+Plugin 'lua.vim'
+Plugin 'xolox/vim-lua-ftplugin'
+Plugin 'xolox/vim-misc'
 
 call vundle#end()
 filetype plugin indent on
 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" lua.vim 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:lua_complete_omni = 1
+
+" 高亮显示普通txt文件（需要txt.vim脚本）
+au BufRead,BufNewFile * setfiletype txt
+" the hightline *.lua.txt
+au BufNewFile,BufRead *.lua.txt set filetype=lua
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " NERDTree.vim 
@@ -333,6 +384,20 @@ for temp in [0,1,2,3,4,5,6,7,8,9]
 endfor
 
 
+"normal & insert mode
+"Alt + k ： 上移当前行
+"Alt + j ： 下移当前行
+"visual mode
+"Alt + k ：上移当前行或者选中行
+"Alt + j ： 下移当前行或者选中行
+
+nnoremap <A-j> :m .+1<CR>==
+nnoremap <A-k> :m .-2<CR>==
+inoremap <A-j> <Esc>:m .+1<CR>==gi
+inoremap <A-k> <Esc>:m .-2<CR>==gi
+vnoremap <A-j> :m '>+1<CR>gv=gv
+vnoremap <A-k> :m '<-2<CR>gv=gv
+
 
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " CTags的设定  
@@ -370,10 +435,10 @@ imap <silent> <F12> :A<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "minibufexplorerpp
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-let g:miniBufExplMapWindowNavVim = 1   "按下Ctrl+h/j/k/l，可以切换到当前窗口的上下左右窗口
-let g:miniBufExplMapWindowNavArrows = 1  "按下Ctrl+箭头，可以切换到当前窗口的上下左右窗口
-let g:miniBufExplMapCTabSwitchBufs = 1   "启用以下两个功能：Ctrl+tab移到下一个窗口
-let g:miniBufExplModSelTarget = 1  "不要在不可编辑内容的窗口（如TagList窗口）中打开选中的buffer
+"let g:miniBufExplMapWindowNavVim = 1   "按下Ctrl+h/j/k/l，可以切换到当前窗口的上下左右窗口
+"let g:miniBufExplMapWindowNavArrows = 1  "按下Ctrl+箭头，可以切换到当前窗口的上下左右窗口
+"let g:miniBufExplMapCTabSwitchBufs = 1   "启用以下两个功能：Ctrl+tab移到下一个窗口
+"let g:miniBufExplModSelTarget = 1  "不要在不可编辑内容的窗口（如TagList窗口）中打开选中的buffer
 "map <F9> :MBEbp<CR>
 "map <F10> :MBEbn<CR>
 
@@ -411,17 +476,162 @@ imap <F3> :Tagbar<CR>
 """""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 "leader映射为逗号“，”
-let mapleader = "," 
+"let mapleader = "," 
 "配置默认的ycm_extra_conf.py
-let g:ycm_global_ycm_extra_conf = 'C:\Program Files (x86)\Vim\.ycm_extra_conf.py'
+"let g:ycm_global_ycm_extra_conf = 'C:\Program Files (x86)\Vim\.ycm_extra_conf.py'
 "按gb 会跳转到定义
 "nnoremap <silent> gb :YcmCompleter GoToDefinitionElseDeclaration<CR>  
-nnoremap <silent> gl :YcmCompleter GoglToDeclaration<CR>
-nnoremap <silent> gf :YcmCompleter GoToDefinition<CR>
-nnoremap <silent> gb :YcmCompleter GoToDefinitionElseDeclaration<CR>
+"nnoremap <silent> gl :YcmCompleter GoglToDeclaration<CR>
+"nnoremap <silent> gf :YcmCompleter GoToDefinition<CR>
+"nnoremap <silent> gb :YcmCompleter GoToDefinitionElseDeclaration<CR>
  
 "打开vim时不再询问是否加载ycm_extra_conf.py配置
-let g:ycm_confirm_extra_conf=0   
+"let g:ycm_confirm_extra_conf=0   
 "使用ctags生成的tags文件
-let g:ycm_collect_identifiers_from_tag_files = 1 
+"let g:ycm_collect_identifiers_from_tag_files = 1 
 "map <F4> : YcmDiags<CR>
+
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+"neocomplete. 
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+let g:neocomplete_start_auto_complete = 1
+let g:neocomplete#enable_at_startup = 1
+inoremap <expr><TAB> pumvisible() ? "\<C-n>" : "\<TAB>"
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<TAB>"
+
+
+" -----------------------------------------------------------------------------  
+"  < indentLine 插件配置 >  
+" -----------------------------------------------------------------------------  
+" 用于显示对齐线，与 indent_guides 在显示方式上不同，根据自己喜好选择了  
+" 在终端上会有屏幕刷新的问题，这个问题能解决有更好了  
+" 开启/关闭对齐线  
+nmap <leader>il :IndentLinesToggle<CR>
+"let g:indentLine_char = "┊"
+let g:indentLine_first_char = "┊"
+let g:indentLine_color_gui = '#A4E57E'
+
+" -----------------------------------------------------------------------------  
+"  < SrcExpl 插件配置 >  
+" -----------------------------------------------------------------------------  
+" 增强源代码浏览，其功能就像Windows中的"Source Insight"  
+"nmap <F7> :SrcExplToggle<CR>                "打开/闭浏览窗口 
+
+" -----------------------------------------------------------------------------  
+"  < vim-multiple-cursors 插件配置 >  
+" -----------------------------------------------------------------------------  
+set selection=inclusive
+let g:multi_cursor_use_default_mapping=0
+" Default mapping
+let g:multi_cursor_next_key='<C-j>'
+let g:multi_cursor_prev_key='<C-p>'
+let g:multi_cursor_skip_key='<C-x>'
+let g:multi_cursor_quit_key='<Esc>'
+
+
+" Called once right before you start selecting multiple cursors
+function! Multiple_cursors_before()
+  if exists(':NeoCompleteLock')==2
+    exe 'NeoCompleteLock'
+  endif
+endfunction
+
+" Called once only when the multiple selection is canceled (default <Esc>)
+function! Multiple_cursors_after()
+  if exists(':NeoCompleteUnlock')==2
+    exe 'NeoCompleteUnlock'
+  endif
+endfunction
+
+"美化状态栏"
+""""""""""""""""""""""""""""""""""""""""""  
+""" airline设置  
+""""""""""""""""""""""""""""""""""""""""""  
+set t_Co=256 " Enable status bar color
+set laststatus=2
+"在执行宏命令时，不进行显示重绘；在宏命令执行完成后，一次性重绘，以便提高性能。
+set lazyredraw
+"let g:airline_theme='luna'
+"let g:airline_theme='simple'
+let g:airline_powerline_fonts=1
+let g:airline#extensions#tabline#enabled=1
+" 关闭空白符检测  
+let g:airline#extensions#whitespace#enabled=0
+
+" tabline中buffer显示编号
+let g:airline#extensions#tabline#buffer_nr_show = 1
+
+if !exists('g:airline_symbols')
+	let g:airline_symbols = {}
+endif
+
+" powerline symbols
+let g:airline_left_sep = '>>'
+" tabline中未激活buffer两端的分隔字符
+let g:airline_left_alt_sep = '>'
+let g:airline_right_sep = '<<'
+let g:airline_right_alt_sep = '<'
+let g:airline_symbols.branch = '|'
+let g:airline_symbols.readonly = '|'
+let g:airline_symbols.linenr = '|'
+
+"设置切换Buffer快捷键"
+nnoremap <C-N> :bn<CR>
+nnoremap <C-P> :bp<CR>
+
+
+" 映射<leader>num到num buffer
+map <leader>1 :b 1<CR>
+map <leader>2 :b 2<CR>
+map <leader>3 :b 3<CR>
+map <leader>4 :b 4<CR>
+map <leader>5 :b 5<CR>
+map <leader>6 :b 6<CR>
+map <leader>7 :b 7<CR>
+map <leader>8 :b 8<CR>
+map <leader>9 :b 9<CR>
+
+
+inoremap jj <esc>f
+
+"cpp-enhanced-highlight
+"高亮类，成员函数，标准库和模板
+"let g:cpp_class_scope_highlight = 1
+"let g:cpp_member_variable_highlight = 1
+"let g:cpp_class_decl_highlight = 1
+"let g:cpp_concepts_highlight = 1
+"let g:cpp_experimental_simple_template_highlight = 1
+"文件较大时使用下面的设置高亮模板速度较快，但会有一些小错误
+"let g:cpp_experimental_template_highlight = 1
+"let c_no_curly_error=1
+
+""""""""""""""""""""""""""""""""""""""""""  
+""" 括号颜色 
+"""""""""""""""""""""""""""""""""""""""""" 
+let g:rainbow_active = 1 "0 if you want to enable it later via :RainbowToggle
+let g:rainbow_conf = {
+	\	'guifgs': ['green', 'darkorange3', 'seagreen3', 'yellow'],
+	\	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+	\	'operators': '_,_',
+	\	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+	\	'separately': {
+	\		'*': {},
+	\		'tex': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+	\		},
+	\		'lisp': {
+	\			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+	\		},
+	\		'vim': {
+	\			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+	\		},
+	\		'html': {
+	\			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+	\		},
+	\		'css': 0,
+	\	}
+	\}
+	
+"取消高亮显示
+map <C-k> :noh<CR>
+imap <C-k> :noh<CR>
