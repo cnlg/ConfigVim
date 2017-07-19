@@ -56,21 +56,21 @@ set noerrorbells
 
 filetype on
 filetype plugin indent on
-"colorscheme evening	"配色方案
 colorscheme desert
 "set helplang=cn		"设置中文帮助
 set history=500		"保留历史记录
 "set guifont=Monaco:h10	"设置字体为Monaco，大小10
 "set guifont=Courier_New:h12 ":cANSI   " 设置字体 
 set guifont=Courier_New:h12 ":cANSI   " 设置字体  
-set tabstop=4		"设置tab的跳数
 
 " 统一缩进为4
-set smartindent  
-set tabstop=4  
-set shiftwidth=4  
-set expandtab  
-set softtabstop=4
+set expandtab
+set tabstop=4		"设置tab的跳数
+set shiftwidth=4
+"set shiftwidth=4 "换行时，交错使用4个空格
+"set showmatch "设置匹配模式，相当于括号匹配
+set autoindent "设置自动对齐et softtabstop=4
+set smartindent " next level indent
 
 "行内替换
 set gdefault
@@ -81,7 +81,6 @@ set whichwrap+=<,>,h,l
 " 高亮显示普通txt文件（需要txt.vim脚本）
 au BufRead,BufNewFile *  setfiletype txt
 
-set expandtab
 set backspace=2 	"设置退格键可用set nu! 		"设置显示行号
 set wrap 		"设置自动换行
 "set nowrap 		"设置不自动换行
@@ -97,6 +96,11 @@ set mouse=a 		"设置在任何模式下鼠标都可用
 set noundofile
 set nobackup
 set noswapfile
+"Python语法配置
+syntax enable
+syntax on
+set filetype=python
+au BufNewFile,BufRead *.py,*.pyw setf python
 
 "去除声音
 set noeb
@@ -151,11 +155,8 @@ set nocompatible  "去掉讨厌的有关vi一致性模式，避免以前版本�
 set nu        "显示行号
 "syntax enable "打开语法高亮
 syntax on     "打开语法高亮
-set showmatch "设置匹配模式，相当于括号匹配
-set smartindent "智能对齐
-"set shiftwidth=4 "换行时，交错使用4个空格
-set autoindent "设置自动对齐
-set ai! "设置自动缩进
+set ai "设置自动缩进
+set si
 "set cursorcolumn "启用光标列
 set cursorline	"启用光标行
 set guicursor+=a:blinkon0 "设置光标不闪烁
@@ -184,24 +185,21 @@ nmap ,fp :let @*=substitute(expand("%:p"), "/", "\\", "g")<CR>
 
 " 为C程序提供自动缩进
 "自动补全
-:inoremap ( ()<ESC>i
-:inoremap ) <c-r>=ClosePair(')')<CR>
-:inoremap { {<CR>}<ESC>O
-:inoremap } <c-r>=ClosePair('}')<CR>
-:inoremap [ []<ESC>i
-:inoremap ] <c-r>=ClosePair(']')<CR>
-:inoremap " ""<ESC>i
-:inoremap ' ''<ESC>i
-function! ClosePair(char)
-    if getline('.')[col('.') - 1] == a:char
-        return "\<Right>"
-    else
-        return a:char
-    endif
-endfunction
-filetype plugin indent on 
-"打开文件类型检测, 加了这句才可以用智能补全
-set completeopt=longest,menu
+":inoremap ( ()<ESC>i
+":inoremap ) <c-r>=ClosePair(')')<CR>
+":inoremap { {<CR>}<ESC>O
+":inoremap } <c-r>=ClosePair('}')<CR>
+":inoremap [ []<ESC>i
+":inoremap ] <c-r>=ClosePair(']')<CR>
+":inoremap " ""<ESC>i
+":inoremap ' ''<ESC>i
+"function! ClosePair(char)
+"    if getline('.')[col('.') - 1] == a:char
+"        return "\<Right>"
+"    else
+"        return a:char
+"  endif
+"endfunction
 
 "打开文件类型检测, 加了这句才可以用智能补全
 set completeopt=longest,menu
@@ -212,6 +210,7 @@ set completeopt=longest,menu
 "inoremap { {<CR>}<ESC>kA<CR>
 " inoremap < <><ESC>i
 "
+
 "定义CompileRun函数，用来调用编译和运行  
 func CompileRun()  
 exec "w"  
@@ -292,6 +291,7 @@ Plugin 'luochen1990/rainbow'
 Plugin 'lua.vim'
 Plugin 'xolox/vim-lua-ftplugin'
 Plugin 'xolox/vim-misc'
+Plugin 'python.vim'
 
 call vundle#end()
 filetype plugin indent on
@@ -649,4 +649,11 @@ endfunction
   
 map gb <ESC>:call OpenFileLocation()<CR>  
 
+" Go to last file(s) if invoked without arguments.
+autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
+    \ call mkdir($HOME . "/.vim") |
+    \ endif |
+    \ execute "mksession! " . $HOME . "/.vim/Session.vim"
 
+autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
+    \ execute "source " . $HOME . "/.vim/Session.vim"
