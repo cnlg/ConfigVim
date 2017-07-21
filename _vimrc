@@ -54,6 +54,7 @@ set shortmess=atI
 " 不让vim发出讨厌的滴滴声
 set noerrorbells
 
+
 filetype on
 filetype plugin indent on
 colorscheme desert
