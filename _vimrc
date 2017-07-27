@@ -73,6 +73,8 @@ set shiftwidth=4
 set autoindent "设置自动对齐et softtabstop=4
 set smartindent " next level indent
 
+au BufNewFile,BufRead *.py,*.pyw setf python
+
 "行内替换
 set gdefault
 
@@ -101,7 +103,7 @@ set noswapfile
 syntax enable
 syntax on
 set filetype=python
-au BufNewFile,BufRead *.py,*.pyw setf python
+
 
 "去除声音
 set noeb
@@ -304,6 +306,7 @@ let g:lua_complete_omni = 1
 
 " 高亮显示普通txt文件（需要txt.vim脚本）
 au BufRead,BufNewFile * setfiletype txt
+
 " the hightline *.lua.txt
 au BufNewFile,BufRead *.lua.txt set filetype=lua
 
@@ -336,7 +339,7 @@ let NERDTreeWinPos='left'
 "窗口宽度
 let NERDTreeWinSize=31
 "不显示'Bookmarks' label 'Press ? for help'
-let NERDTreeMinimalUI=0
+let NERDTreeMinimalUI= 0 
 "当打开vim且没有文件时自动打开NERDTree
 autocmd vimenter * if !argc() | NERDTree | endif
 "只剩 NERDTree时自动关闭
@@ -543,10 +546,10 @@ set laststatus=2
 set lazyredraw
 "let g:airline_theme='luna'
 "let g:airline_theme='simple'
-let g:airline_powerline_fonts=1
+"let g:airline_powerline_fonts=1
 let g:airline#extensions#tabline#enabled=1
 " 关闭空白符检测  
-let g:airline#extensions#whitespace#enabled=0
+let g:airline#extensions#whitespace#enabled= 0
 
 " tabline中buffer显示编号
 let g:airline#extensions#tabline#buffer_nr_show = 1
@@ -565,9 +568,10 @@ let g:airline_symbols.branch = '|'
 let g:airline_symbols.readonly = '|'
 let g:airline_symbols.linenr = '|'
 
+
 "设置切换Buffer快捷键"
-nnoremap <C-N> :bn<CR>
-nnoremap <C-P> :bp<CR>
+nnoremap <C-L> :bn<CR>
+nnoremap <C-N> :bp<CR>
 
 " 映射<leader>num到num buffer
 map <leader>1 :b 1<CR>
@@ -651,10 +655,10 @@ endfunction
 map gb <ESC>:call OpenFileLocation()<CR>  
 
 " Go to last file(s) if invoked without arguments.
-autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
-    \ call mkdir($HOME . "/.vim") |
-    \ endif |
-    \ execute "mksession! " . $HOME . "/.vim/Session.vim"
-
-autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
-    \ execute "source " . $HOME . "/.vim/Session.vim"
+"autocmd VimLeave * nested if (!isdirectory($HOME . "/.vim")) |
+"    \ call mkdir($HOME . "/.vim") |
+"    \ endif |
+"    \ execute "mksession! " . $HOME . "/.vim/Session.vim"
+"
+"autocmd VimEnter * nested if argc() == 0 && filereadable($HOME . "/.vim/Session.vim") |
+"    \ execute "source " . $HOME . "/.vim/Session.vim"
