@@ -82,9 +82,18 @@ colorscheme desert
 "set helplang=cn		"设置中文帮助
 set history=500		"保留历史记录
 
+"字体设置
 "set guifont=Monaco:h10	"设置字体为Monaco，大小10
 "set guifont=Courier_New:h12 ":cANSI   " 设置字体 
-set guifont=Courier_New:h12 ":cANSI   " 设置字体  
+
+if has("gui_gtk2")                              
+    set guifont=DejaVu\ Sans\ Mono\ 11                              
+elseif has("gui_macvim")                              
+    set guifont=DejaVu_Sans_Mono:h11                              
+elseif has("gui_win32")                              
+    "set guifont=DejaVu_Sans_Mono:h11
+    set guifont=Courier_New:h12 ":cANSI   " 设置字体  
+end
 
 au BufNewFile,BufRead *.py,*.pyw setf python
 
@@ -191,6 +200,7 @@ set tabstop=4                        "设置tab键为4个空格，
 set shiftwidth =4                   "设置当行之间交错时使用4个空格     
 set expandtab
 set smartindent                    "依据上面的对齐格式，智能的选择对齐方式，对于类似C语言编写上有用   
+set softtabstop=4                  "方便在开启了et后使用退格（backspace）键，每次退格将删除X个空格
 
 if has("autocmd")
 autocmd FileType javascript setlocal ts=4 sts=4 sw=4 expandtab
@@ -199,8 +209,8 @@ endif
 
 " 括号自动补全
 inoremap ' ''<ESC>i
-inoremap " ""<ESC>i
-inoremap ( ()<ESC>i
+"inoremap " ""<ESC>i
+"inoremap ( ()<ESC>i
 inoremap [ []<ESC>i
 inoremap { {<CR>}<ESC>O
 
@@ -286,6 +296,7 @@ Plugin 'xolox/vim-lua-ftplugin'
 Plugin 'xolox/vim-misc'
 Plugin 'python.vim'
 
+
 call vundle#end()
 filetype plugin indent on
 
@@ -357,6 +368,12 @@ nmap    w=  :resize +3<CR>
 nmap    w-  :resize -3<CR>
 nmap    w,  :vertical resize -3<CR>
 nmap    w.  :vertical resize +3<CR>
+
+"split navigations
+"nnoremap <C-J> <C-W><C-J>
+"nnoremap <C-K> <C-W><C-K>
+"nnoremap <C-L> <C-W><C-L>
+"nnoremap <C-H> <C-W><C-H>
 
 "新建标签
 :map <F8> <Esc>:tabnew<CR>
@@ -561,7 +578,7 @@ let g:airline_symbols.linenr = '|'
 
 "设置切换Buffer快捷键"
 nnoremap <C-L> :bn<CR>
-nnoremap <C-N> :bp<CR>
+nnoremap <C-H> :bp<CR>
 
 " 映射<leader>num到num buffer
 map <leader>1 :b 1<CR>
