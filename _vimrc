@@ -369,7 +369,16 @@ nmap    w-  :resize -3<CR>
 nmap    w,  :vertical resize -3<CR>
 nmap    w.  :vertical resize +3<CR>
 
-"split navigations
+"""""按ctrl+G键自动缩进美化代码"""""
+noremap <C-G> <Esc>gg=G<CR>
+inoremap <C-G> <C-O> <Esc>gg=G<CR>
+
+"切换窗口
+nnoremap wj <C-W><C-J>
+nnoremap wk <C-W><C-K>
+nnoremap wl <C-W><C-L>
+nnoremap wh <C-W><C-H>
+
 "nnoremap <C-J> <C-W><C-J>
 "nnoremap <C-K> <C-W><C-K>
 "nnoremap <C-L> <C-W><C-L>
@@ -592,7 +601,8 @@ map <leader>8 :b 8<CR>
 map <leader>9 :b 9<CR>
 
 
-inoremap jj <esc>f
+inoremap jj <esc>
+"inoremap jj <esc>f
 
 "cpp-enhanced-highlight
 "高亮类，成员函数，标准库和模板
